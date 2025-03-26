@@ -46,7 +46,7 @@ final class PassThroughSubjectViewModel: ObservableObject {
         case notEvaluated
     }
     
-    @Published var text = ""
+    @Published var text = "Enter the card number here"
     @Published var state: ValidationState = .notEvaluated
     var textSubject = PassthroughSubject<String, Never>()
     
