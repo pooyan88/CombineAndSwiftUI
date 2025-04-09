@@ -46,7 +46,7 @@ final class ContainsWhereViewModel: ObservableObject {
     func fetch() {
         var dataInMemory: [Fruit] = []
         dataInMemory.append(.init(name: "Apple", addtionalData: "Vitamin A, Vitamin C"))
-         dataInMemory.publisher
+        cancellable = dataInMemory.publisher
             .sink { fruit in
                 self.fruitName = fruit
             }
