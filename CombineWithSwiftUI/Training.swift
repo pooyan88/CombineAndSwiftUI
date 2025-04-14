@@ -9,6 +9,12 @@ import SwiftUI
 import Combine
 
 
+struct User: Codable, Identifiable, Hashable {
+    let id: Int
+    let name: String
+    let username: String
+}
+
 struct ListProvider: View {
 
     var user: User
@@ -165,13 +171,6 @@ extension WebService {
         return try await baseRequest(for: .getUsers, type: [User].self)
     }
 }
-
-struct User: Codable, Identifiable, Hashable {
-    let id: Int
-    let name: String
-    let username: String
-}
-
 
 struct CancellableView: View {
     @StateObject var viewModel = CancellableViewViewModel()
