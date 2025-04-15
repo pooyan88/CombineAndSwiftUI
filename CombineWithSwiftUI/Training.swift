@@ -302,7 +302,58 @@ final class ContainsExampleViewModel: ObservableObject {
     }
 }
 
+struct TableViewExample: View {
+    @StateObject var vm = TableViewExampleViewModel()
+    var body: some View {
+        VStack {
+            List {
+                ForEach(vm.items) { item in
+                    HStack {
+                        Text(item.name)
+                            .frame(maxWidth: .infinity, alignment: .leading);                        Text("\(item.count)")
+                    }.onTapGesture {
+                        vm.doAction(for: item)
+                    }
+
+                }
+                .onMove(perform: vm.move)
+                .onDelete(perform: vm.delete(at:))
+            }
+        }
+    }
+}
+
+final class TableViewExampleViewModel: ObservableObject {
+
+    struct Item: Identifiable {
+        var id = UUID()
+        var name: String
+        var count: Int
+    }
+    @Published var items: [Item] = [
+        Item(name: "Apple", count: 5),
+        Item(name: "Banana", count: 15),
+        Item(name: "Orange", count: 10),
+        Item(name: "Kiwi", count: 7),
+    ]
+
+    func delete(at offsets: IndexSet) {
+        items.remove(atOffsets: offsets)
+    }
+
+    func doAction(for item: Item) {
+        print("item ===>", item.name)
+    }
+
+    func move(from source: IndexSet, to destination: Int) {
+        withAnimation {
+            items.move(fromOffsets: source, toOffset: destination)
+        }
+     }
+
+}
+
 
 #Preview {
-    ContainsExample()
+    TableViewExample()
 }
