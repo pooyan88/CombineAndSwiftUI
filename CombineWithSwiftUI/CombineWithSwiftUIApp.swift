@@ -11,7 +11,7 @@ import SwiftUI
 struct CombineWithSwiftUIApp: App {
     var body: some Scene {
         WindowGroup {
-            TryMinByExample()
+            AppendExampleView2()
         }
     }
 }
