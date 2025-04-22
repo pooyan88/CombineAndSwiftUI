@@ -26,14 +26,14 @@ struct MaxByExample: View {
     }
 }
 
+struct Profile: Identifiable {
+    var id = UUID()
+    var name: String
+    var city: String
+}
 
 final class MaxByExampleViewModel: ObservableObject {
 
-    struct Profile: Identifiable {
-        var id = UUID()
-        var name: String
-        var city: String
-    }
 
     @Published var persons: [Profile] = []
     @Published var maxValue: String = ""
