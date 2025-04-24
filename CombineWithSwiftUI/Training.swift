@@ -302,7 +302,45 @@ final class ContainsExampleViewModel: ObservableObject {
     }
 }
 
+struct DropUntilOutputFromExample2: View {
+    
+    @StateObject var vm = DropUntilOutputFromExample2ViewModel()
+    var body: some View {
+        VStack {
+            Button("Start pipeline") {
+                vm.start()
+            }
+            List {
+                ForEach(vm.list, id: \.self) { item in
+                    Text(item)
+                }
+            }
+            Button("Clear") {
+                vm.list.removeAll()
+                vm.cancellable?.cancel()
+            }
+        }
+    }
+}
+
+final class DropUntilOutputFromExample2ViewModel: ObservableObject {
+    
+    @Published var list: [String] = []
+    var cancellable: AnyCancellable?
+    
+    func start() {
+        var dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        cancellable = Timer.publish(every: 1, on: .main, in: .common)
+            .autoconnect()
+            .sink { [unowned self] timer in
+                list.append(dateFormatter.string(from: timer))
+            }
+    }
+    
+}
+
 
 #Preview {
-    ContainsExample()
+    DropUntilOutputFromExample2()
 }
