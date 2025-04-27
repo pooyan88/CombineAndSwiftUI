@@ -302,58 +302,45 @@ final class ContainsExampleViewModel: ObservableObject {
     }
 }
 
-struct TableViewExample: View {
-    @StateObject var vm = TableViewExampleViewModel()
+struct DropUntilOutputFromExample2: View {
+    
+    @StateObject var vm = DropUntilOutputFromExample2ViewModel()
     var body: some View {
         VStack {
+            Button("Start pipeline") {
+                vm.start()
+            }
             List {
-                ForEach(vm.items) { item in
-                    HStack {
-                        Text(item.name)
-                            .frame(maxWidth: .infinity, alignment: .leading);                        Text("\(item.count)")
-                    }.onTapGesture {
-                        vm.doAction(for: item)
-                    }
-
+                ForEach(vm.list, id: \.self) { item in
+                    Text(item)
                 }
-                .onMove(perform: vm.move)
-                .onDelete(perform: vm.delete(at:))
+            }
+            Button("Clear") {
+                vm.list.removeAll()
+                vm.cancellable?.cancel()
             }
         }
     }
 }
 
-final class TableViewExampleViewModel: ObservableObject {
-
-    struct Item: Identifiable {
-        var id = UUID()
-        var name: String
-        var count: Int
+final class DropUntilOutputFromExample2ViewModel: ObservableObject {
+    
+    @Published var list: [String] = []
+    var cancellable: AnyCancellable?
+    
+    func start() {
+        var dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        cancellable = Timer.publish(every: 1, on: .main, in: .common)
+            .autoconnect()
+            .sink { [unowned self] timer in
+                list.append(dateFormatter.string(from: timer))
+            }
     }
-    @Published var items: [Item] = [
-        Item(name: "Apple", count: 5),
-        Item(name: "Banana", count: 15),
-        Item(name: "Orange", count: 10),
-        Item(name: "Kiwi", count: 7),
-    ]
-
-    func delete(at offsets: IndexSet) {
-        items.remove(atOffsets: offsets)
-    }
-
-    func doAction(for item: Item) {
-        print("item ===>", item.name)
-    }
-
-    func move(from source: IndexSet, to destination: Int) {
-        withAnimation {
-            items.move(fromOffsets: source, toOffset: destination)
-        }
-     }
-
+    
 }
 
 
 #Preview {
-    TableViewExample()
+    DropUntilOutputFromExample2()
 }
