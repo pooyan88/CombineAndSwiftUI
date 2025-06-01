@@ -340,7 +340,38 @@ final class DropUntilOutputFromExample2ViewModel: ObservableObject {
     
 }
 
+struct PublisherTraining: View {
+    @StateObject var vm = PublisherTrainingViewModel()
+    var body: some View {
+        VStack {
+            List {
+                ForEach(vm.dataToView, id: \.self) { item in
+                    Text(item)
+                }
+            }
+        }
+    }
+}
+
+final class PublisherTrainingViewModel: ObservableObject {
+
+    var dataFromServer: [String] = ["Apple", "Banana", "Banana", "Orange"]
+    @Published var dataToView: [String] = []
+    var cancellable: AnyCancellable?
+
+    func getPublisher() -> AnyPublisher<String, Never> {
+        dataFromServer.publisher
+            .removeDuplicates()
+            .eraseToAnyPublisher()
+    }
+
+    init() {
+       cancellable = getPublisher().sink { item in
+            self.dataToView.append(item)
+        }
+    }
+}
 
 #Preview {
-    DropUntilOutputFromExample2()
+    PublisherTraining()
 }
